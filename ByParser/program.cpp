@@ -862,11 +862,15 @@ void CPart::filter()
 			if (data->addr < 0 || data->addr > 3) {
 				if (data == node->data) {
 					data = data->next;
-					node->data = data;
-					if (data->prev->trail)
-						delete(data->prev->trail);
-					delete(data->prev);
-					data->prev = nullptr;
+					if (data) {
+						node->data = data;
+						if (data->prev) {
+							if (data->prev->trail)
+								delete(data->prev->trail);
+							delete(data->prev);
+						}
+						data->prev = nullptr;
+					}
 					continue;
 				}
 				else {
