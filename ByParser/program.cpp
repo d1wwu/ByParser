@@ -65,7 +65,7 @@ std::string CProgram<T>::cmd_value(std::string str, std::string::size_type pos)
 
 	i = pos;
 	pos++;
-	while (isalpha(str[pos]) == 0 && pos < str.size())
+	while (pos < str.size() && isalpha(str[pos]) == 0)
 		pos++;
 
 	return str.substr(i, pos - i);
@@ -179,7 +179,7 @@ void CPlan::plan_parser(const char* program)
 		}
 		this_round = lbuf;
 
-		if (this_round.size() <= 0)
+		if (this_round.size() == 0)
 			continue;
 
 		pos = this_round.find("JobCode");
@@ -522,14 +522,12 @@ void CPlan::calculation()
 void CPlan::update_cutlength()
 {
 	cmap::const_iterator it;
-	double tc;
-	int n;
 	std::ostringstream q;
 
-	for (it = cutlength_map_.begin(); it != cutlength_map_.end(); it++)
+	for (it = cutlength_map_.begin(); it != cutlength_map_.end(); ++it)
 	{
-		tc = atof(it->second.c_str());
-		n = atoi(get_part_quantity(it->first).c_str());
+		double tc = atof(it->second.c_str());
+		int n = atoi(get_part_quantity(it->first).c_str());
 
 		if (n != 0)
 			tc = tc / n;
@@ -545,14 +543,12 @@ void CPlan::update_cutlength()
 void CPlan::update_pierces()
 {
 	cmap::const_iterator it;
-	int pierces;
-	int n;
 	std::ostringstream q;
 
-	for (it = pierces_map_.begin(); it != pierces_map_.end(); it++)
+	for (it = pierces_map_.begin(); it != pierces_map_.end(); ++it)
 	{
-		pierces = atoi(it->second.c_str());
-		n = atoi(get_part_quantity(it->first).c_str());
+		int pierces = atoi(it->second.c_str());
+		int n = atoi(get_part_quantity(it->first).c_str());
 
 		if (n != 0)
 			pierces = pierces / n;
@@ -632,8 +628,6 @@ void CPlan::part_list()
 	CPlan *plan = head;
 	CPart* node = plan->part;
 	CPart* tmp = nullptr;
-	int i;
-	int p;
 	std::ostringstream q;
 	cmap::const_iterator it;
 
@@ -643,10 +637,10 @@ void CPlan::part_list()
 			node = plan->part;
 	}
 	while (node) {
-		i = 0;
-		p = 0;
 		it = part_map_.find(node->code);
 		if (it == part_map_.end()) {
+			int i = 0;
+			int p = 0;
 			if (node->n > 0) {
 				i = node->n;
 				p++;
@@ -681,7 +675,7 @@ CPart::CPart()
 	data = nullptr;
 }
 
-CPart::CPart(std::string str) : n{ 0 }, m04{ 0 }, m14{ 0 }, m18{ 0 }, data{nullptr}
+CPart::CPart(const std::string &str) : n{ 0 }, m04{ 0 }, m14{ 0 }, m18{ 0 }, data{nullptr}
 {
 	insert();
 	if (tail)

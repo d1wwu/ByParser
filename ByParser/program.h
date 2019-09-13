@@ -52,7 +52,7 @@ public:
 	static double offset_x;
 
 	CPlan();
-	CPlan(const char* program);
+	explicit CPlan(const char* program);
 	virtual ~CPlan();
 
 	void plan_parser(const char* program);
@@ -82,7 +82,7 @@ public:
 	CData *data;
 
 	CPart();
-	CPart(std::string str);
+	explicit CPart(const std::string &str);
 	virtual ~CPart();
 
 	void insert_part(std::string str);
